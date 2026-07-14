@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head><title>Prediction History</title></head>
+<body>
+    <h1>Prediction History</h1>
+    <table border="1">
+        <tr>
+            <th>Team 1</th>
+            <th>Team 2</th>
+            <th>Venue</th>
+            <th>Predicted Winner</th>
+            <th>Time</th>
+        </tr>
+        {% for p in predictions %}
+        <tr>
+            <td>{{ p[0] }}</td>
+            <td>{{ p[1] }}</td>
+            <td>{{ p[2] }}</td>
+            <td>{{ p[3] }}</td>
+            <td>{{ p[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Back to Home</a>
+</body>
+</html>

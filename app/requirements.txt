@@ -1,0 +1,6 @@
+flask
+pandas
+numpy
+scikit-learn
+openpyxl
+psycopg2-binary

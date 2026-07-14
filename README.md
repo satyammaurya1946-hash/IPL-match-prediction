@@ -1,198 +1,119 @@
-# IPL-match-prediction
-# 🏏 IPL Match Winner Prediction
 
-A Machine Learning project that predicts the winner of an IPL (Indian Premier League) cricket match based on match conditions such as batting team, bowling team, city, target score, current score, overs completed, wickets lost, and other match statistics.
+# 🏏 IPL Match Prediction
+
+A Flask web application that predicts IPL (Indian Premier League) match outcomes using a Logistic Regression model trained on historical match data, with results logged to a PostgreSQL database. The whole stack runs via Docker Compose.
 
 ---
 
 ## 📌 Project Overview
 
-The goal of this project is to build a machine learning model that predicts the probability of each team winning during the second innings of an IPL match.
+The app offers two prediction modes:
 
-The model analyzes historical IPL match data and provides real-time winning probabilities for both teams.
+- **Single Match Prediction** — pick two teams and a venue, and get the predicted winner along with a win probability, plus a simulated toss result and decision (bat/field).
+- **Tournament Simulation** — run a full simulated IPL season across the league fixtures and see the output.
+
+Every prediction made through the web UI is logged to a PostgreSQL database and can be viewed on a **History** page.
 
 ---
 
 ## 🚀 Features
 
-- Predicts IPL match winners
-- Real-time winning probability
-- User-friendly interface
-- Data preprocessing and feature engineering
-- Machine Learning model training
-- Interactive prediction system
+- Web dashboard with links to each prediction mode
+- Single-match winner prediction with win probability, toss winner, and toss decision
+- Full tournament simulation
+- Prediction history stored in and retrieved from PostgreSQL
+- Fully containerized with Docker Compose (Flask app + Postgres DB)
 
 ---
 
-## 📂 Dataset
+## 📂 Repository Structure
 
-The project uses historical IPL datasets:
-
-- `matches.csv`
-- `deliveries.csv`
-
-These datasets contain information about:
-
-- Teams
-- Cities
-- Venues
-- Match results
-- Ball-by-ball deliveries
-- Runs scored
-- Wickets
-- Overs
+```
+IPL-match-prediction/
+├── app/
+│   ├── app.py                    # Flask routes (home, single, tournament, history)
+│   ├── core.py                   # Data loading, model training, and prediction logic
+│   ├── Match_Info.csv            # Historical IPL match data
+│   ├── ipl_2025_deliveries.csv   # Ball-by-ball data for the 2025 season
+│   ├── schedule_2025.csv         # 2025 season fixture schedule
+│   ├── requirements.txt
+│   ├── Dockerfile
+│   ├── static/
+│   │   └── tailwind.css
+│   └── templates/
+│       ├── index.html
+│       ├── single.html
+│       ├── tournament.html
+│       └── history.html
+├── db/
+│   └── init.sql                  # Creates the `predictions` table
+├── docker-compose.yml
+└── README.md
+```
 
 ---
 
 ## 🛠️ Technologies Used
 
 - Python
-- Pandas
-- NumPy
-- Scikit-learn
-- Matplotlib
-- Seaborn
-- Streamlit
-- Pickle
+- Flask
+- pandas / NumPy
+- scikit-learn (`LogisticRegression`)
+- PostgreSQL (via `psycopg2`)
+- Docker & Docker Compose
+- Tailwind CSS (via CDN, for styling)
 
 ---
 
-## 📊 Machine Learning Workflow
+## 📊 How It Works
 
-1. Data Collection
-2. Data Cleaning
-3. Feature Engineering
-4. Data Preprocessing
-5. Model Training
-6. Model Evaluation
-7. Prediction
-8. Deployment using Streamlit
-
----
-
-## 📈 Input Features
-
-The model takes the following inputs:
-
-- Batting Team
-- Bowling Team
-- Host City
-- Target Score
-- Current Score
-- Overs Completed
-- Wickets Lost
-
-From these values, additional features like:
-
-- Runs Left
-- Balls Left
-- Current Run Rate (CRR)
-- Required Run Rate (RRR)
-
-are calculated automatically.
+1. `core.py` loads historical match data (`Match_Info.csv`) and the 2025 schedule (`schedule_2025.csv`)
+2. Team codes in the schedule are mapped to full team names, and placeholder fixtures (e.g. qualifiers, finals not yet decided) are filtered out
+3. A `LogisticRegression` model is trained on the historical data to estimate win probabilities
+4. The Flask app exposes this through:
+   - `/single` — predict a specific matchup and venue
+   - `/tournament` — simulate the full season
+   - `/history` — view past predictions, pulled from PostgreSQL
 
 ---
 
-## 📉 Model Performance
+## ▶️ Running the Project
 
-The model was trained using historical IPL data and evaluated using standard machine learning metrics.
-
-Algorithms tested include:
-
-- Logistic Regression
-- Random Forest
-- Decision Tree
-
-The best-performing model was selected for prediction.
-
----
-
-## ▶️ How to Run the Project
-
-### Clone the repository
+This project is designed to run with Docker Compose.
 
 ```bash
-git clone https://github.com/your-username/IPL-Winner-Prediction.git
+git clone https://github.com/satyammaurya1946-hash/IPL-match-prediction.git
+cd IPL-match-prediction
 ```
 
-### Navigate to the project folder
+Create a `.env` file inside `app/` with your Postgres credentials (used by both the Flask app and the `db` service):
+
+```
+POSTGRES_DB=ipl_db
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+```
+
+Then start the stack:
 
 ```bash
-cd IPL-Winner-Prediction
+docker-compose up --build
 ```
 
-### Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### Run the Streamlit application
-
-```bash
-streamlit run app.py
-```
-
----
-
-## 📁 Project Structure
-
-```
-IPL-Winner-Prediction/
-│
-├── app.py
-├── pipe.pkl
-├── matches.csv
-├── deliveries.csv
-├── requirements.txt
-├── README.md
-└── notebooks/
-```
-
----
-
-## 📷 Screenshots
-
-Add screenshots of your application here.
-
-Example:
-
-- Home Page
-- Prediction Page
-- Result Page
+The app will be available at **http://localhost:5000**.
 
 ---
 
 ## 🎯 Future Improvements
 
-- Deep Learning model
-- Live IPL API integration
-- Better feature engineering
-- Win probability graph
-- Player performance analysis
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome!
-
-Feel free to fork the repository and submit a pull request.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License.
+- Add data visualizations (win probability trends, team performance charts)
+- Try additional models (Random Forest, Decision Tree) and compare performance
+- Add authentication for the history page
+- Deploy to a cloud platform
 
 ---
 
 ## 👨‍💻 Author
 
 **Satyam Maurya**
-
-B.Tech (Information Technology)
-
-Data Science & Machine Learning Enthusiast
-
-GitHub: https://github.com/satyammaurya1946-hash
+GitHub: [@satyammaurya1946-hash](https://github.com/satyammaurya1946-hash)
